@@ -14,6 +14,15 @@ public class MethodExecutionCalculationAspect {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Around("execution(* hu.tmx.aop.exampleOne.service.*.*(..))")
+    public Object aroundReturn(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        long startTime = System.currentTimeMillis();
+        proceedingJoinPoint.proceed();
+        long timeTaken = System.currentTimeMillis() - startTime;
+        logger.info("Time Taken by {} is {}", proceedingJoinPoint, timeTaken);
+        return proceedingJoinPoint.proceed();
+    }
+
+    @Around("execution(* hu.tmx.aop.exampleOne.service.*.*(..))")
     public void around(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
         proceedingJoinPoint.proceed();
