@@ -1,0 +1,50 @@
+Dependency:
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-aop</artifactId>
+	</dependency>
+
+Mi ez:
+	• Aspect Oriented Programming
+	• A különböző method hívásokat lehet vele megfogni. Amikor történik egy method hívás ezzel képesek vagyunk azt érzékelni, és a method hívás előtt vagy után, vagy folyamatában csinálni valamit. Például logolni, megmérni mennyi idő alatt fut le egy hívás stb.
+	• Egy alkalmazásnak az mvc modell szerint több layere van, amik jól elkülöníthetők egymástól. Vannak azonban olyan dolgok, amelyeket minden layerben meg kell valósítani (cross-cutting concern) például a logolás.
+
+Megvalósítása:
+	• Spring AOP - egyszerűbb, de kevesebb mindenre használható
+	• AspectJ
+
+Spring AOP:
+	Használat:
+		Külön osztályt csinálunk, amelyben definiáljuk, hogy melyik method hívásokat akarjuk figyelni.
+		Az osztály fölé kell a @Configuration és a @Aspect annotáció
+		A PointCut-okat ki szokás szervezni egy közös használatú file-ba: @Poincut annotációval hozhatóak létre
+	Fogalmak:
+		PointCut - ez az útvonal meghatározás, ami megmondja, hogy milyen hívásokat kell figyelni
+			Formája:
+				"execution(* PACKAGE_NAME.*.*(..))" - adott package hívásait nézi
+				"execution(* PACKAGE_NAME..*.*(..))" - az összes subpackage hívásait is nézi
+			Jelentése:
+				Az első * azt jelenti, hogy mindegy mi a return type
+				A második * azt jelenti, hogy az összes osztály packag-en belül
+				A harmadik * azt jelenti, hogy az összes hívás, függetlenül a bemenő paraméterektől
+		Advice - a metódus törzse, mi történjen amikor befut az aop-hoz hívás
+		Aspect - pointcut + advice neve együtt
+		JoinPoint - a hívás részleteit tartalmazza
+		ProceedingJoinPoint – ezzel tudjuk a @Around-al figyelt methodok futását elindítani, a .proceed() függvényével
+		Weaver – framework, ami lehetővé teszi az aop működését, összeszövi egy teljes egésszé a különböző aspecteket
+		Weaving – ez teszi lehetővé, hogy a létrehozott aspectek a megfelelő időben fussanak le, úgy ahogy kell
+	Eszközök:
+		@Before - a hívás előtt fut le
+		@AfterReturning – akkor fut le, ha sikeres volt a hívás, visszakapjuk a hívás return value értékét is
+		@AfterThrowing – akkor fut le, ha a hívás nem sikeres, ilyenkor az exception-t is visszakapjuk
+		@After - mindkét fenti esetben lefut
+		@Around – a hívás kezdete előtt kezd el futni, majd a method bodyjában tudjuk a hívást elindítani és azt is beállíthatjuk, hogy a hívás után mi történjen. Kombinálja az after és befor működését. Például egy method futási idejének leméréséhez lehet jó. Mert a method futása előtt is tudunk csinálni dolgokat és utána is.
+		@Pointcut - útvonal definiálásra külön file-ban
+			Útvonal megadása több lehetőség:
+				• Alap: "execution(* PACKAGE_NAME.*.*(..))"
+				• Már meglévőket kombinálhatunk logikai operátorokkal pl. ||
+				• Bean neve alapján "bean(*dao*)" pl tartalmazza ezt a kifejezést, vagy valahogy kezdődő nevűek
+				• Within-el (ugyanazt csinálja mint az alap ) "within(PACKAGE_NAME..*)"
+				• @annotation(annotation osztálya) - például, ha létrehozunk saját annotációt, és azt a fölé a metódusok fölé tesszük, amire akarjuk, hogy a pointcut vonatkozzon.
+
+
